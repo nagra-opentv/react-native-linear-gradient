@@ -9,11 +9,11 @@
  */
 #pragma once
 
+#include <vector>
 #include <jsi/jsi.h>
 #include <react/renderer/components/view/ViewProps.h>
 #include <react/renderer/core/propsConversions.h>
 #include <react/renderer/graphics/Color.h>
-#include <vector>
 
 #include "ReactSkia/views/common/RSkConversion.h"
 

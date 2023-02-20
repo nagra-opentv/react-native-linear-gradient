@@ -33,10 +33,6 @@ rn_cxx_component("BVLinearGradient") {
     "react/renderer/components/rnx-gradient/Props.cpp",
   ]
 
-  # RNSVG cpp sources
-  sources += [
-  ]
-
   public_configs = [ ":LibBVLinearGradient_config" ]
   deps = [
     "//folly",

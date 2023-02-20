@@ -16,14 +16,11 @@
 namespace facebook {
 namespace react {
 
-using namespace std;
-
 class RSkComponentBVLinearGradient : public RSkComponent {
  public:
   RSkComponentBVLinearGradient(const ShadowView &shadowView);
   ~RSkComponentBVLinearGradient() = default;
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newviewProps,bool forceUpdate) override;
-  void handleCommand(std::string commandName, folly::dynamic args) override;
 
  protected:
   void OnPaint(SkCanvas *canvas) override;

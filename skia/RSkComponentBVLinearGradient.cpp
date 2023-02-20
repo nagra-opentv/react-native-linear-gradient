@@ -6,14 +6,10 @@
  */
 
 #include "include/core/SkPaint.h"
+#include "include/core/SkRRect.h"
 #include "include/effects/SkGradientShader.h"
 
-#include "cxxreact/ModuleRegistry.h"
-
 #include "react/renderer/components/rnx-gradient/Props.h"
-#include "rns_shell/compositor/layers/PictureLayer.h"
-
-#include "ReactSkia/views/common/RSkDrawUtils.h"
 
 #include "RSkComponentBVLinearGradient.h"
 
@@ -21,23 +17,14 @@ namespace facebook {
 namespace react {
 
 RSkComponentBVLinearGradient::RSkComponentBVLinearGradient(const ShadowView &shadowView)
-    : RSkComponent(shadowView) {
-  RNS_LOG_TODO("Listen to notifications about module invalidation default notification center : RCTWillInvalidateModulesNotification");
-}
-
-void RSkComponentBVLinearGradient::handleCommand(std::string commandName, folly::dynamic args){
-  RNS_LOG_WARN("[RSkComponentBVLinearGradient][handleCommand] commandName : "<< commandName);
-  RNS_LOG_NOT_IMPL;
-  return;
-}
+    : RSkComponent(shadowView) {}
 
 RnsShell::LayerInvalidateMask  RSkComponentBVLinearGradient::updateComponentProps(SharedProps newViewProps, bool forceUpdate) {
   RnsShell::LayerInvalidateMask invalidateMask = RnsShell::LayerInvalidateNone;
 
   auto const &newBVLinearGradientProps = *std::static_pointer_cast<LinearGradientViewProps const>(newViewProps);
-  auto const &oldBVLinearGradientProps = *std::static_pointer_cast<LinearGradientViewProps const>(getComponentData().props);
 
-  RNS_LOG_INFO(" Start: [" << newBVLinearGradientProps.start.x << "," << newBVLinearGradientProps.start.y <<
+  RNS_LOG_DEBUG(" Start: [" << newBVLinearGradientProps.start.x << "," << newBVLinearGradientProps.start.y <<
                   "], End: [" << newBVLinearGradientProps.end.x << "," << newBVLinearGradientProps.end.y <<
                   "], Colors: " << newBVLinearGradientProps.colors.size() <<
                   ", Locations: " << newBVLinearGradientProps.locations.size() <<
@@ -46,7 +33,6 @@ RnsShell::LayerInvalidateMask  RSkComponentBVLinearGradient::updateComponentProp
                   ", AngleCenter: [" << newBVLinearGradientProps.angleCenter.x << "," << newBVLinearGradientProps.angleCenter.y << "]");
 
   RNS_UNUSED(newBVLinearGradientProps);
-  RNS_UNUSED(oldBVLinearGradientProps);
   return invalidateMask;
 }
 
@@ -95,7 +81,7 @@ void RSkComponentBVLinearGradient::OnPaint(SkCanvas *canvas) {
     }
   }
 
-  SkPoint startEndPoints[] = { //Initialize with default value
+  SkPoint startEndPoints[] = { //Initialize with default values {start{0.5,0} end{0.5,0.1}}
     {(0.5 * frameWidth) + frameX, (0 * frameHeight) + frameY},
     {(0.5 * frameWidth)+ frameX, (1 * frameHeight) + frameY}};
 
@@ -112,18 +98,22 @@ void RSkComponentBVLinearGradient::OnPaint(SkCanvas *canvas) {
     startEndPoints[1].set(((linearGradientProps.end.x * frameWidth) + frameX), ((linearGradientProps.end.y * frameHeight) + frameY));
   }
 
-  auto lgs = SkGradientShader::MakeLinear(startEndPoints,
+  SkPaint paint;
+  SkRRect roundRect;
+  SkVector radii[4]={{borderMetrics.borderRadii.topLeft,borderMetrics.borderRadii.topLeft},
+                      {borderMetrics.borderRadii.topRight,borderMetrics.borderRadii.topRight},
+                      {borderMetrics.borderRadii.bottomRight,borderMetrics.borderRadii.bottomRight },
+                      {borderMetrics.borderRadii.bottomLeft,borderMetrics.borderRadii.bottomLeft}};
+  auto gradientShader = SkGradientShader::MakeLinear(startEndPoints,
                                           colors,
                                           (locationsMapAvailable ? pos : nullptr),
                                           numColors,
                                           SkTileMode::kClamp,
                                           0/*flags*/, &matrx);
+  paint.setShader(gradientShader);
+  roundRect.setRectRadii({frameX, frameY, frameX+frameWidth, frameY+frameHeight}, radii);
+  canvas->drawRRect(roundRect, paint);
 
-  SkPaint paint;
-  paint.setShader(lgs);
-  canvas->drawRoundRect({frameX, frameY, frameX+frameWidth, frameY+frameHeight},
-                        borderMetrics.borderRadii.topLeft,
-                        borderMetrics.borderRadii.topRight, paint);
   drawBorder(canvas, frame, borderMetrics, linearGradientProps.backgroundColor);
 }
 
