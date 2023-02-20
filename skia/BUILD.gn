@@ -1,0 +1,44 @@
+##############################################################
+
+import("//react-native/common.gni")
+
+config("LibBVLinearGradient_config") {
+  cflags_cc = [ "-std=c++17"]
+  cflags_cc += [
+    "-Wno-extra-semi",
+    "-Wno-sign-compare",
+    "-Wno-header-hygiene",
+  ]
+
+  include_dirs = [".",
+                  "//react-native/",
+                  "//react-native/ReactCommon/",
+                  "//react-native/ReactCommon/jsi/",
+                  "//react-native/ReactCommon/react/renderer/graphics/platform/cxx",
+                  "//react-native/ReactCommon/yoga/",
+                  "//rns_shell/",
+                  "//ReactSkia/",
+                  ]
+}
+
+rn_cxx_component("BVLinearGradient") {
+
+  # RNS Fabric Component and its dependencies
+  sources = [
+    "RSkComponentProviderBVLinearGradient.cpp",
+    "RSkComponentProviderBVLinearGradient.h",
+    "RSkComponentBVLinearGradient.cpp",
+    "RSkComponentBVLinearGradient.h",
+    "react/renderer/components/rnx-gradient/ShadowNodes.cpp",
+    "react/renderer/components/rnx-gradient/Props.cpp",
+  ]
+
+  public_configs = [ ":LibBVLinearGradient_config" ]
+  deps = [
+    "//folly",
+    "//skia",
+  ]
+
+  with_exceptions = true
+  with_rtti = true
+}
