@@ -21,7 +21,7 @@ config("LibBVLinearGradient_config") {
                   ]
 }
 
-rn_cxx_component("BVLinearGradient") {
+rns_cxx_tp_component("bvlineargradient") {
 
   # RNS Fabric Component and its dependencies
   sources = [

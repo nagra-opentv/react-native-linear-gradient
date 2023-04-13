@@ -1,0 +1,25 @@
+{
+  "codegenConfig": {
+    "name": "bvlineargradient",
+    "version": "2.6.2",
+    "type": "components",
+    "skia": {
+      "codegenNativeComponentNativeProps": ["BVLinearGradient"]
+    }
+  },
+  "viewManagerConfig": {
+    "BVLinearGradient": {
+      "nativePropsConfig": [
+          "startPoint",
+          "endPoint",
+          "colors",
+          "locations",
+          "useAngle",
+          "angleCenter",
+          "angle"
+      ],
+      "directEventConfig": [],
+      "bubblingEventConfig": []
+    }
+  }
+}
